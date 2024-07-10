@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list/data/categories.dart';
 
 class NewItem extends StatefulWidget{
   const NewItem({super.key});
@@ -33,7 +34,45 @@ class _NewItemState extends State<NewItem> {
                   // you can decide when Flutter will call this function
                   return 'demo error message';
                 },
-
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        label: Text('Quantity'),
+                        ),
+                      initialValue: '1',
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child:
+                    DropdownButtonFormField(
+                      items: [ // we create the list with a for loop
+                        for (final category in categories.entries) // entries returns a list of key-value pairs
+                          DropdownMenuItem(
+                            value: category.value,
+                            child: Row(
+                              children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                color: category.value.color,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(category.value.title),
+                              ],
+                            ),
+                          ),
+                      ], 
+                      onChanged: (value) {
+                        // this function is called when the user selects a category
+                        // you can use this to update the state of the widget
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
