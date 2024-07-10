@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
+import 'package:shopping_list/models/category.dart';
 
 class NewItem extends StatefulWidget{
   const NewItem({super.key});
@@ -14,10 +15,20 @@ class _NewItemState extends State<NewItem> {
   final _formKey = GlobalKey<FormState>(); 
   // a key (global key value) to access the form widget and set the validation up
   // allowing the form to keep its internal state
+  var _enteredName = '';
+  var _enteredQuantity = 1;
+  var _selectedCategory = categories[Categories.fruit]!;
 
   void _saveItem() {
     // trigger validation
-    _formKey.currentState!.validate();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      // debug
+      print('Name: $_enteredName');
+      print('Quantity: $_enteredQuantity');
+      print('Category: ${_selectedCategory.title}');
+    }
   }
 
   @override
@@ -53,6 +64,9 @@ class _NewItemState extends State<NewItem> {
                   }
                   return null;
                 },
+                onSaved: (value) {
+                  _enteredName = value!;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -63,7 +77,7 @@ class _NewItemState extends State<NewItem> {
                         label: Text('Quantity'),
                         ),
                       keyboardType: TextInputType.number,
-                      initialValue: '1',
+                      initialValue: _enteredQuantity.toString(),
                       validator: (value) { 
                         if (value == null || 
                             value.isEmpty || 
@@ -74,11 +88,15 @@ class _NewItemState extends State<NewItem> {
                         }
                         return null;
                       },
+                      onSaved: (value) {
+                        _enteredQuantity = int.parse(value!);
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(child:
                     DropdownButtonFormField(
+                      value: _selectedCategory,
                       items: [ // we create the list with a for loop
                         for (final category in categories.entries) // entries returns a list of key-value pairs
                           DropdownMenuItem(
@@ -99,6 +117,12 @@ class _NewItemState extends State<NewItem> {
                       onChanged: (value) {
                         // this function is called when the user selects a category
                         // you can use this to update the state of the widget
+                        // and save the value in the state (no need to call onSaved)
+                        setState(() { // required because the visible value
+                                      // of the selected category must be shown
+                                      // in the widget, so the Form must be rebuilt
+                          _selectedCategory = value!;
+                        });
                       },
                     ),
                   ),
