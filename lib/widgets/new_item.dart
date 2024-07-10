@@ -27,12 +27,21 @@ class _NewItemState extends State<NewItem> {
             children: [
               TextFormField( // a text input field specifit to Form insearch of a TextField
                 maxLength: 50,
-                decoration: const InputDecoration(label: Text('Name')),
+                decoration: const InputDecoration(
+                  label: Text('Name'),
+                  ),
                 validator: (value) { 
                   // a validation function that returns an error message if the input is invalid
                   // or null if the input is valid
                   // you can decide when Flutter will call this function
-                  return 'demo error message';
+                  if (value == null || 
+                      value.isEmpty || 
+                      value.trim().length <= 1 || 
+                      value.trim().length > 50) 
+                  {
+                    return 'Must be between 1 and 50 characters long.';
+                  }
+                  return null;
                 },
               ),
               Row(
@@ -44,6 +53,16 @@ class _NewItemState extends State<NewItem> {
                         label: Text('Quantity'),
                         ),
                       initialValue: '1',
+                      validator: (value) { 
+                        if (value == null || 
+                            value.isEmpty || 
+                            int.tryParse(value) == null ||
+                            int.tryParse(value)! <= 0 )
+                        {
+                          return 'Must be a valid positive number.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),
