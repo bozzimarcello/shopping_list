@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -32,18 +34,19 @@ class _NewItemState extends State<NewItem> {
       // print('Name: $_enteredName');
       // print('Quantity: $_enteredQuantity');
       // print('Category: ${_selectedCategory.title}');
-
-      // close the form and return the entered data
-      Navigator.of(context).pop(
-        // close the current screen and returns to the previous one
-        // returning the entered data
-        GroceryItem(
-          id: DateTime.now().toString(),
-          name: _enteredName,
-          quantity: _enteredQuantity,
-          category: _selectedCategory,
-        ),
-      ); 
+      
+      final url = Uri.https('flutter-prep-225f8-default-rtdb.europe-west1.firebasedatabase.app', 'shopping-list.json');
+      http.post(url,
+                headers: {
+                  'Content-Type' : 'application/json'
+                  },
+                body: json.encode({
+                    'name': _enteredName,
+                    'quantity': _enteredQuantity,
+                    'category': _selectedCategory.title,
+                    },
+                  ),
+                );
     }
   }
 
