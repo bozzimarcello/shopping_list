@@ -11,6 +11,15 @@ class NewItem extends StatefulWidget{
 }
 
 class _NewItemState extends State<NewItem> {
+  final _formKey = GlobalKey<FormState>(); 
+  // a key (global key value) to access the form widget and set the validation up
+  // allowing the form to keep its internal state
+
+  void _saveItem() {
+    // trigger validation
+    _formKey.currentState!.validate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +29,7 @@ class _NewItemState extends State<NewItem> {
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Form(
+          key: _formKey,
           // the Form widgets contains a lot of useful features
           // to manage user input (witch can be done without it)
           // such as: validation, show validation errors, etc.
@@ -52,6 +62,7 @@ class _NewItemState extends State<NewItem> {
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
                         ),
+                      keyboardType: TextInputType.number,
                       initialValue: '1',
                       validator: (value) { 
                         if (value == null || 
@@ -97,8 +108,16 @@ class _NewItemState extends State<NewItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(onPressed: () {}, child: const Text('Reset')),
-                  ElevatedButton(onPressed: () {}, child: const Text('Add Item')),
+                  TextButton(
+                    onPressed: () {
+                      _formKey.currentState!.reset();
+                    }, 
+                    child: const Text('Reset'),
+                    ),
+                  ElevatedButton(
+                    onPressed: _saveItem, 
+                    child: const Text('Add Item'),
+                    ),
                 ],
               ),
             ],
