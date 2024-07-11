@@ -17,6 +17,7 @@ class GroceryList extends StatefulWidget {
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems= [];
   var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -28,26 +29,41 @@ class _GroceryListState extends State<GroceryList> {
     
     final url = Uri.https('flutter-prep-225f8-default-rtdb.europe-west1.firebasedatabase.app', 'shopping-list.json');
 
-    final response = await http.get(url);
+    try {
 
-    final Map<String,dynamic> listData = json.decode(response.body);
+      final response = await http.get(url);
+      
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'An error occurred: ${response.statusCode}';
+        });
+      }
 
-    final List<GroceryItem> loadedItems = [];
-    for (final item in listData.entries) {
-      final category = categories.entries.firstWhere(
-        (element) => element.value.title == item.value['category']
-        ).value;
-      loadedItems.add(GroceryItem(
-        id: item.key,
-        name: item.value['name'],
-        quantity: item.value['quantity'],
-        category: category,
-      ));
+      final Map<String,dynamic> listData = json.decode(response.body);
+
+      final List<GroceryItem> loadedItems = [];
+      for (final item in listData.entries) {
+        final category = categories.entries.firstWhere(
+          (element) => element.value.title == item.value['category']
+          ).value;
+        loadedItems.add(GroceryItem(
+          id: item.key,
+          name: item.value['name'],
+          quantity: item.value['quantity'],
+          category: category,
+        ));
+      }
+      setState(() {
+        _groceryItems = loadedItems;
+        _isLoading = false;
+      });
+    } catch (error) {
+        setState(() {
+          // to be changed in production
+          _error = 'An exception was raised: ${error.toString()}';
+        });
     }
-    setState(() {
-      _groceryItems = loadedItems;
-      _isLoading = false;
-    });
+
   }
 
   void _addItem() async {
@@ -105,6 +121,12 @@ class _GroceryListState extends State<GroceryList> {
               ),
           ),
         )
+      );
+    }
+
+    if (_error != null) {
+      content = Center(
+        child: Text(_error!),
       );
     }
 
