@@ -27,7 +27,9 @@ class _GroceryListState extends State<GroceryList> {
 
   void _loadItems() async {
     
-    final url = Uri.https('flutter-prep-225f8-default-rtdb.europe-west1.firebasedatabase.app', 'shopping-list.json');
+    final url = Uri.https(
+      'flutter-prep-225f8-default-rtdb.europe-west1.firebasedatabase.app', 
+      'shopping-list.json');
 
     try {
 
@@ -66,8 +68,8 @@ class _GroceryListState extends State<GroceryList> {
       });
     } catch (error) {
         setState(() {
-          // to be changed in production
-          _error = 'An exception was raised: ${error.toString()}';
+          // debug _error = 'An exception was raised: ${error.toString()}';
+          _error = 'Something went wrong! Please try again.';
         });
     }
 

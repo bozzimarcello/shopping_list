@@ -37,6 +37,8 @@ class _NewItemState extends State<NewItem> {
       // print('Category: ${_selectedCategory.title}');
       
       final url = Uri.https('flutter-prep-225f8-default-rtdb.europe-west1.firebasedatabase.app', 'shopping-list.json');
+
+      // TODO: add exception handling
       final response = await http.post(url,
                 headers: {
                   'Content-Type' : 'application/json'
@@ -49,8 +51,8 @@ class _NewItemState extends State<NewItem> {
                   ),
                 );
       // debug
-      print(response.body);
-      print(response.statusCode);
+      // print(response.body);
+      // print(response.statusCode);
       
       final Map<String, dynamic> resData = json.decode(response.body);
 
