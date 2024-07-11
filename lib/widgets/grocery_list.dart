@@ -39,6 +39,13 @@ class _GroceryListState extends State<GroceryList> {
         });
       }
 
+      if (response.body == 'null') { // the actual value depends on the backend
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+      
       final Map<String,dynamic> listData = json.decode(response.body);
 
       final List<GroceryItem> loadedItems = [];
